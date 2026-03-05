@@ -11,5 +11,4 @@ public interface DbHelper {
     void initDatabase();
     Connection getConnection();
 
-
 }
