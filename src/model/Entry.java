@@ -11,6 +11,15 @@ public class Entry {
     private LocalDateTime endDate;
     private Integer carId;
     private EntryStatus status;
+    private double cost;
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
 
     public Integer getId() {
         return id;
@@ -60,6 +69,7 @@ public class Entry {
                 ", endDate=" + endDate +
                 ", carId=" + carId +
                 ", status=" + status +
+                ", cost=" + cost +
                 '}';
     }
 }

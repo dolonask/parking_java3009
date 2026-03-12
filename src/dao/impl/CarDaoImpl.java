@@ -58,4 +58,31 @@ public class CarDaoImpl implements CarDao {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public boolean existsByCarNumber(String carNumber) {
+        Connection connection = DbHelper.INSTANCE.getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement("select count(*) from cars where car_number = ?;");
+            preparedStatement.setString(1, carNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                int count = resultSet.getInt(1);
+                return count == 1;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                connection.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return false;
+    }
 }

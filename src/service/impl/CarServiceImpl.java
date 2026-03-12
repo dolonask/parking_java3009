@@ -15,13 +15,16 @@ public class CarServiceImpl implements CarService {
         if (car == null){
             car = carDao.saveCar(carNumber);
         }
-
-        System.out.println(car);
         return car;
         /*
         1. Найти машину в БД с указанным номером
         2. Если машины нет, то создать
          */
 
+    }
+
+    @Override
+    public boolean existsByCarNumber(String carNumber) {
+        return carDao.existsByCarNumber(carNumber);
     }
 }

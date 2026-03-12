@@ -23,7 +23,10 @@ public class Main {
                 System.out.print("Номер автобомиля: ");
                 String carNumber = scanner.next();
                 EntryService.INSTANCE.in(carNumber);
-
+            } else if (choice == 2){
+                System.out.print("Номер автобомиля: ");
+                String carNumber = scanner.next();
+                EntryService.INSTANCE.out(carNumber);
             }
             if (choice == 4)
                 break;

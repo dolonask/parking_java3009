@@ -9,13 +9,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EntryDaoImpl implements EntryDao {
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
     @Override
     public void saveEntry(Entry entry) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-
         Connection connection = DbHelper.INSTANCE.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("insert into entries(id_cars,start_date,status) values(?,?,?);");
@@ -56,5 +57,53 @@ public class EntryDaoImpl implements EntryDao {
         }
 
         return false;
+    }
+
+    @Override
+    public Entry findByCarIdAndStatus(Integer carId, EntryStatus status) {
+        Connection connection = DbHelper.INSTANCE.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("select id, start_date from entries where id_cars = ? and status = ?;");
+            preparedStatement.setInt(1, carId);
+            preparedStatement.setString(2, status.name());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                Entry entry = new Entry();
+                entry.setId(resultSet.getInt("id"));
+                entry.setStartDate(LocalDateTime.parse(resultSet.getString("start_date"), formatter));
+                entry.setCarId(carId);
+                entry.setStatus(status);
+
+                preparedStatement.close();
+                resultSet.close();
+                connection.close();
+
+
+                return entry;
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    @Override
+    public void setEntry(Entry entry) {
+        Connection connection = DbHelper.INSTANCE.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("update entries set status = ?, end_date = ?, cost = ? where id = ?;");
+            preparedStatement.setString(1, entry.getStatus().name());
+            preparedStatement.setString(2, formatter.format(entry.getEndDate()));
+            preparedStatement.setDouble(3, entry.getCost());
+            preparedStatement.setInt(4, entry.getId());
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

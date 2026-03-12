@@ -8,6 +8,7 @@ public interface CarService {
     CarService INSTANCE = new CarServiceImpl();
 
     Car findCarOrSaveIfNotExists(String carNumber);
+    boolean existsByCarNumber(String carNumber);
 
 
 }

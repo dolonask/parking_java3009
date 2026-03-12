@@ -9,5 +9,6 @@ public interface CarDao {
 
     Car findByCarNumber(String carNumber);
     Car saveCar(String carNumber);
+    boolean existsByCarNumber(String carNumber);
 
 }
