@@ -3,6 +3,7 @@ package service.impl;
 import dao.EntryDao;
 import model.Car;
 import model.Entry;
+import model.dto.EntryDto;
 import model.enums.EntryStatus;
 import service.CarService;
 import service.EntryService;
@@ -10,6 +11,7 @@ import service.EntryService;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class EntryServiceImpl implements EntryService {
 
@@ -54,6 +56,12 @@ public class EntryServiceImpl implements EntryService {
         entryDao.setEntry(entry);
         printEntry(car, entry, duration);
 
+    }
+
+    @Override
+    public List<EntryDto> findEntryDtosInParking() {
+        List<EntryDto> entryDtos = entryDao.findEntryDtosByStatus(EntryStatus.IN);
+        return entryDtos;
     }
 
     private void printEntry(Car car, Entry entry, Duration duration) {

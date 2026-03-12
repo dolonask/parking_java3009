@@ -3,6 +3,7 @@ package dao.impl;
 import dao.DbHelper;
 import dao.EntryDao;
 import model.Entry;
+import model.dto.EntryDto;
 import model.enums.EntryStatus;
 
 import java.sql.Connection;
@@ -11,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntryDaoImpl implements EntryDao {
 
@@ -105,5 +108,30 @@ public class EntryDaoImpl implements EntryDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<EntryDto> findEntryDtosByStatus(EntryStatus entryStatus) {
+        Connection conn = DbHelper.INSTANCE.getConnection();
+        List<EntryDto> entryDtos = new ArrayList<>();
+        try {
+            PreparedStatement ps = conn.prepareStatement("select e.id, c.car_number, e.start_date from entries e join cars c on e.id_cars = c.id where e.status = ? ;");
+            ps.setString(1, entryStatus.name());
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()){
+                EntryDto entryDto = new EntryDto();
+                entryDto.setEntryId(resultSet.getInt(1));
+                entryDto.setCarNumber(resultSet.getString(2));
+                entryDto.setStartDate(LocalDateTime.parse(resultSet.getString(3), formatter));
+                entryDtos.add(entryDto);
+            }
+            ps.close();
+            resultSet.close();
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return entryDtos;
     }
 }

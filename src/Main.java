@@ -1,5 +1,9 @@
+import model.dto.EntryDto;
+import model.enums.EntryStatus;
 import service.EntryService;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -27,8 +31,13 @@ public class Main {
                 System.out.print("Номер автобомиля: ");
                 String carNumber = scanner.next();
                 EntryService.INSTANCE.out(carNumber);
-            }
-            if (choice == 4)
+            } else if (choice == 3){
+                List<EntryDto> entryDtos = EntryService.INSTANCE.findEntryDtosInParking();
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+                for (int i = 0; i < entryDtos.size(); i++){
+                    System.out.println((i+1)+". Автомобиль: " + entryDtos.get(i).getCarNumber() + ". Время заезда: " + dateTimeFormatter.format(entryDtos.get(i).getStartDate()));
+                }
+            } else if (choice == 4)
                 break;
 
 
